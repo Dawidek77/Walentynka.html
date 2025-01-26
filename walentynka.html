@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walentynkowe pytanie</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #ffe4e1;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    h1 {
+      color: #ff1493;
+      font-size: 2.5rem;
+    }
+    button {
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+      margin: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .yes {
+      background-color: #ff69b4;
+      color: white;
+    }
+    .yes:hover {
+      background-color: #ff1493;
+    }
+    .no {
+      background-color: #ccc;
+      color: black;
+    }
+    .no:hover {
+      background-color: #aaa;
+    }
+    #message {
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      color: #333;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Zostaniesz moją Walentynką?</h1>
+  <button class="yes" onclick="showFireworks()">Tak</button>
+  <button class="no" onclick="showMessage('A to Spierdalaj 😢')">Nie</button>
+  <p id="message"></p>
+  <canvas id="fireworks"></canvas>
+
+  <script>
+    // Wyświetlanie wiadomości
+    function showMessage(text) {
+      const message = document.getElementById('message');
+      message.textContent = text;
+    }
+
+    // Wyświetlanie fajerwerków
+    function showFireworks() {
+      showMessage('Dziękuję, kocham Cię!');
+      const canvas = document.getElementById('fireworks');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#ff1493', '#ff69b4', '#ffb6c1', '#ff4500', '#ffd700'];
+
+      function createParticle(x, y) {
+        const particle = {
+          x: x,
+          y: y,
+          size: Math.random() * 5 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          speedX: Math.random() * 6 - 3,
+          speedY: Math.random() * 6 - 3,
+          life: 100
+        };
+        particles.push(particle);
+      }
+
+      function updateParticles() {
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.speedX;
+          p.y += p.speedY;
+          p.life--;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+        });
+      }
+
+      function loop() {
+        updateParticles();
+        drawParticles();
+        if (particles.length > 0) {
+          requestAnimationFrame(loop);
+        }
+      }
+
+      // Tworzenie fajerwerków w losowych miejscach
+      for (let i = 0; i < 100; i++) {
+        createParticle(canvas.width / 2, canvas.height / 2);
+      }
+      loop();
+    }
+  </script>
+</body>
+</html>
